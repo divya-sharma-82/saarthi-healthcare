@@ -27,6 +27,27 @@ const questions = {
         "क्या आपको पहले से कोई बीमारी या मेडिकल हिस्ट्री है?",
         "क्या आप अभी कोई दवा ले रहे हैं?"
     ]
+   /* =========================
+   SAARTHI IMPACT INTERACTION
+   ========================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const impactCards = document.querySelectorAll(".impact-card");
+
+    impactCards.forEach((card) => {
+
+        card.addEventListener("mouseenter", () => {
+            card.style.transform = "translateY(-7px)";
+        });
+
+        card.addEventListener("mouseleave", () => {
+            card.style.transform = "translateY(0)";
+        });
+
+    });
+
+});
 
 };
 
