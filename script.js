@@ -648,8 +648,8 @@ async function savePatientData() {
 
     const { data, error } =
         await db
-            .from("Appoinments")
-            .insert([patientData]);
+        .from("Appoinments")
+        .insert([patientData]);
 
 
     if (error) {
