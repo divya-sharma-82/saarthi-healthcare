@@ -762,3 +762,20 @@ document.addEventListener(
 
     }
 );
+/* =========================
+   SUPABASE CONNECTION TEST
+========================= */
+
+async function testSupabase() {
+    const { data, error } = await db
+        .from("appointments")
+        .select("*")
+        .limit(1);
+
+    if (error) {
+        console.error("Supabase connection error:", error);
+    } else {
+        console.log("Supabase connected successfully:", data);
+    }
+}
+testSupabase();
