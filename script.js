@@ -541,6 +541,7 @@ function generateSummary() {
 
     // Save patient data to Supabase
     savePatientData();
+    console.log("SAVE FUNCTION CALLED");
 
 }
 
