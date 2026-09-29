@@ -1,3 +1,10 @@
+const supabaseUrl = "https://ihwhbfkucocbwmaxnobd.supabase.co/rest/v1/";
+const supabaseKey = "sb_publishable_vFA7NdiYzfpYgBmqRRC4Wg_9GN57zzg";
+
+const db = window.supabase.createClient(
+    supabaseUrl,
+    supabaseKey
+);
 /* =========================================================
    SAARTHI AI HEALTHCARE
    INTERACTIVE JAVASCRIPT
@@ -468,8 +475,6 @@ function showCompletionMessage() {
     }
 
 }
-
-
 /* =========================================================
    GENERATE CASE SUMMARY
 ========================================================= */
@@ -525,16 +530,17 @@ function generateSummary() {
             document.getElementById("reportStatus");
 
         if (reportStatus) {
-
             reportStatus.innerText =
                 "Document uploaded ✓";
-
         }
 
     }
 
 
     checkEmergency(complaint);
+
+    // Save patient data to Supabase
+    savePatientData();
 
 }
 
@@ -548,7 +554,6 @@ function checkEmergency(text) {
     if (!text) {
         return;
     }
-
 
     const emergencyKeywords = [
 
@@ -599,6 +604,69 @@ function checkEmergency(text) {
         }
 
     }
+
+}
+
+
+/* =========================================================
+   SAVE PATIENT DATA TO SUPABASE
+========================================================= */
+
+async function savePatientData() {
+
+    const patientData = {
+
+        name: answers[0] || "Not provided",
+
+        phone: "",
+
+        date:
+            new Date()
+                .toISOString()
+                .split("T")[0],
+
+        message:
+
+            "Age: " +
+            (answers[1] || "Not provided") +
+
+            "\nHealth Problem: " +
+            (answers[2] || "Not provided") +
+
+            "\nDuration: " +
+            (answers[3] || "Not provided") +
+
+            "\nMedical History: " +
+            (answers[4] || "Not provided") +
+
+            "\nMedicines: " +
+            (answers[5] || "Not provided")
+
+    };
+
+
+    const { data, error } =
+        await db
+            .from("Appointments")
+            .insert([patientData]);
+
+
+    if (error) {
+
+        console.error(
+            "Patient data save error:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        "Patient data saved successfully:",
+        data
+    );
 
 }
 
