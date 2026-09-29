@@ -971,6 +971,82 @@ function viewPatient(name) {
         });
 
     }
+    /* =========================================================
+   LOAD PATIENTS FROM SUPABASE
+========================================================= */
+
+async function loadPatients() {
+
+    const tableBody =
+        document.querySelector("#patientTable tbody");
+
+    if (!tableBody) return;
+
+    const { data, error } = await db
+        .from("Appoinments")
+        .select("*")
+        .order("id", { ascending: false });
+
+    if (error) {
+        console.error("Patient loading error:", error);
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="5">
+                    No patient cases found.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tableBody.innerHTML = "";
+
+    data.forEach(patient => {
+
+        const message = patient.message || "";
+
+        const age =
+            message.match(/Age:\s*(.*)/)?.[1] || "—";
+
+        const complaint =
+            message.match(/Health Problem:\s*(.*)/)?.[1] || "—";
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>
+                <div class="patient-name">
+                    <div>${(patient.name || "P").charAt(0)}</div>
+                    ${patient.name || "Unknown"}
+                </div>
+            </td>
+
+            <td>${age}</td>
+
+            <td>${complaint}</td>
+
+            <td>
+                <span class="status pending">
+                    Pending
+                </span>
+            </td>
+
+            <td>
+                <button onclick="viewPatient('${patient.name || "Patient"}')">
+                    View Case
+                </button>
+            </td>
+        `;
+
+        tableBody.appendChild(row);
+
+    });
+
+}
 
 }
 
