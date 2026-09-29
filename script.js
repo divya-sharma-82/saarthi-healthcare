@@ -1051,6 +1051,8 @@ async function loadPatients() {
 }
 document.addEventListener("DOMContentLoaded", function () {
     loadPatients();
+    console.log("LOAD PATIENTS TEST");
+loadPatients();
 });
 
 
