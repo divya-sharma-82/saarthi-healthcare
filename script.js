@@ -8,13 +8,6 @@
    SUPABASE CONNECTION
 ========================================================= */
 
-const supabaseUrl = "https://ihwhbfkucocbwmaxnobd.supabase.co/rest/v1/";
-const supabaseKey = "sb_publishable_vFA7NdiYzfpYgBmqRRC4Wg_9GN57zzg";
-
-const db = window.supabase.createClient(
-    supabaseUrl,
-    supabaseKey
-);
 
 
 /* =========================================================
@@ -913,60 +906,4 @@ function viewPatient(name) {
 }
 
 
-/* =========================================================
-   SUPABASE CONNECTION TEST
-========================================================= */
-
-async function testSupabase() {
-
-    try {
-
-        const { data, error } =
-            await db
-                .from("appointments")
-                .select("*")
-                .limit(1);
-
-
-        if (error) {
-
-            console.error(
-                "Supabase connection error:",
-                error
-            );
-
-            return;
-
-        }
-
-
-        console.log(
-            "Supabase connected successfully:",
-            data
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Supabase test failed:",
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   RUN SUPABASE TEST
-========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        testSupabase();
-
-    }
-);
 
