@@ -1,20 +1,25 @@
-const supabaseUrl = "https://ihwhbfkucocbwmaxnobd.supabase.co/rest/v1/";
-const supabaseKey = "sb_publishable_vFA7NdiYzfpYgBmqRRC4Wg_9GN57zzg";
-
-const db = window.supabase.createClient(
-  supabaseUrl,
-  supabaseKey
-);
-
 /* =========================================================
    SAARTHI AI HEALTHCARE
    INTERACTIVE JAVASCRIPT
 ========================================================= */
 
 
-/* =========================
-   PATIENT ASSESSMENT
-========================= */
+/* =========================================================
+   SUPABASE CONNECTION
+========================================================= */
+
+const supabaseUrl = "https://ihwhbfkucocbwmaxnobd.supabase.co/rest/v1/";
+const supabaseKey = "sb_publishable_vFA7NdiYzfpYgBmqRRC4Wg_9GN57zzg";
+
+const db = window.supabase.createClient(
+    supabaseUrl,
+    supabaseKey
+);
+
+
+/* =========================================================
+   PATIENT ASSESSMENT QUESTIONS
+========================================================= */
 
 const questions = {
 
@@ -35,13 +40,28 @@ const questions = {
         "क्या आपको पहले से कोई बीमारी या मेडिकल हिस्ट्री है?",
         "क्या आप अभी कोई दवा ले रहे हैं?"
     ]
-   /* =========================
-   SAARTHI IMPACT INTERACTION
-   ========================= */
+
+};
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let currentQuestion = 0;
+let selectedLanguage = "en";
+let answers = [];
+let uploadedFile = null;
+
+
+/* =========================================================
+   IMPACT CARD INTERACTION
+========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const impactCards = document.querySelectorAll(".impact-card");
+    const impactCards =
+        document.querySelectorAll(".impact-card");
 
     impactCards.forEach((card) => {
 
@@ -55,45 +75,46 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
+    updateLanguageButtons();
+    updateQuestion();
+
 });
 
-};
 
-
-let currentQuestion = 0;
-
-let selectedLanguage = "en";
-
-let answers = [];
-
-let uploadedFile = null;
-
-
-/* =========================
+/* =========================================================
    START ASSESSMENT
-========================= */
+========================================================= */
 
 function startAssessment() {
 
-    document
-        .getElementById("assessment")
-        .scrollIntoView({
+    const assessment =
+        document.getElementById("assessment");
+
+    if (assessment) {
+
+        assessment.scrollIntoView({
             behavior: "smooth"
         });
 
+    }
+
     setTimeout(() => {
 
-        document
-            .getElementById("answer")
-            .focus();
+        const answer =
+            document.getElementById("answer");
+
+        if (answer) {
+            answer.focus();
+        }
 
     }, 700);
+
 }
 
 
-/* =========================
+/* =========================================================
    LANGUAGE
-========================= */
+========================================================= */
 
 function setLanguage(language) {
 
@@ -110,9 +131,9 @@ function setLanguage(language) {
 }
 
 
-/* =========================
+/* =========================================================
    LANGUAGE BUTTONS
-========================= */
+========================================================= */
 
 function updateLanguageButtons() {
 
@@ -121,6 +142,11 @@ function updateLanguageButtons() {
 
     const hindiBtn =
         document.getElementById("hindiBtn");
+
+
+    if (!englishBtn || !hindiBtn) {
+        return;
+    }
 
 
     englishBtn.classList.remove("active");
@@ -141,9 +167,9 @@ function updateLanguageButtons() {
 }
 
 
-/* =========================
+/* =========================================================
    UPDATE QUESTION
-========================= */
+========================================================= */
 
 function updateQuestion() {
 
@@ -163,6 +189,17 @@ function updateQuestion() {
         document.getElementById("answer");
 
 
+    if (
+        !questionElement ||
+        !numberElement ||
+        !percentElement ||
+        !progressBar ||
+        !answerInput
+    ) {
+        return;
+    }
+
+
     const currentQuestions =
         questions[selectedLanguage];
 
@@ -178,7 +215,7 @@ function updateQuestion() {
     const percent =
         Math.round(
             ((currentQuestion + 1) /
-            currentQuestions.length) * 100
+                currentQuestions.length) * 100
         );
 
 
@@ -208,14 +245,20 @@ function updateQuestion() {
 }
 
 
-/* =========================
+/* =========================================================
    NEXT QUESTION
-========================= */
+========================================================= */
 
 function nextQuestion() {
 
     const answerInput =
         document.getElementById("answer");
+
+
+    if (!answerInput) {
+        return;
+    }
+
 
     const answer =
         answerInput.value.trim();
@@ -225,11 +268,15 @@ function nextQuestion() {
 
         if (selectedLanguage === "hi") {
 
-            alert("कृपया अपना उत्तर दर्ज करें।");
+            alert(
+                "कृपया अपना उत्तर दर्ज करें।"
+            );
 
         } else {
 
-            alert("Please enter your answer.");
+            alert(
+                "Please enter your answer."
+            );
 
         }
 
@@ -237,10 +284,9 @@ function nextQuestion() {
     }
 
 
-    answers[currentQuestion] = answer;
+    answers[currentQuestion] =
+        answer;
 
-
-    /* Emergency check */
 
     checkEmergency(answer);
 
@@ -257,13 +303,19 @@ function nextQuestion() {
 
         showCompletionMessage();
 
+
         setTimeout(() => {
 
-            document
-                .getElementById("summary")
-                .scrollIntoView({
+            const summary =
+                document.getElementById("summary");
+
+            if (summary) {
+
+                summary.scrollIntoView({
                     behavior: "smooth"
                 });
+
+            }
 
         }, 500);
 
@@ -280,9 +332,9 @@ function nextQuestion() {
 }
 
 
-/* =========================
+/* =========================================================
    ENTER KEY
-========================= */
+========================================================= */
 
 function handleEnter(event) {
 
@@ -295,9 +347,9 @@ function handleEnter(event) {
 }
 
 
-/* =========================
+/* =========================================================
    VOICE INPUT
-========================= */
+========================================================= */
 
 function voiceInput() {
 
@@ -313,6 +365,7 @@ function voiceInput() {
         );
 
         return;
+
     }
 
 
@@ -342,51 +395,66 @@ function voiceInput() {
         document.querySelector(".mic-btn");
 
 
-    micButton.innerText = "🔴";
+    if (micButton) {
+        micButton.innerText = "🔴";
+    }
 
 
     recognition.start();
 
 
-    recognition.onresult = function(event) {
+    recognition.onresult =
+        function (event) {
 
-        const transcript =
-            event.results[0][0].transcript;
-
-
-        document
-            .getElementById("answer")
-            .value = transcript;
+            const transcript =
+                event.results[0][0].transcript;
 
 
-        micButton.innerText = "🎤";
-
-    };
-
-
-    recognition.onerror = function() {
-
-        micButton.innerText = "🎤";
-
-        alert(
-            "Voice input could not be detected. Please try again or type your answer."
-        );
-
-    };
+            const answer =
+                document.getElementById("answer");
 
 
-    recognition.onend = function() {
+            if (answer) {
+                answer.value = transcript;
+            }
 
-        micButton.innerText = "🎤";
 
-    };
+            if (micButton) {
+                micButton.innerText = "🎤";
+            }
+
+        };
+
+
+    recognition.onerror =
+        function () {
+
+            if (micButton) {
+                micButton.innerText = "🎤";
+            }
+
+            alert(
+                "Voice input could not be detected. Please try again or type your answer."
+            );
+
+        };
+
+
+    recognition.onend =
+        function () {
+
+            if (micButton) {
+                micButton.innerText = "🎤";
+            }
+
+        };
 
 }
 
 
-/* =========================
+/* =========================================================
    COMPLETION MESSAGE
-========================= */
+========================================================= */
 
 function showCompletionMessage() {
 
@@ -409,54 +477,66 @@ function showCompletionMessage() {
 }
 
 
-/* =========================
+/* =========================================================
    GENERATE CASE SUMMARY
-========================= */
+========================================================= */
 
 function generateSummary() {
 
     const name =
         answers[0] || "Not provided";
 
-
     const age =
         answers[1] || "Not provided";
 
-
     const complaint =
         answers[2] || "Not provided";
-
 
     const duration =
         answers[3] || "Not provided";
 
 
-    document
-        .getElementById("summaryName")
-        .innerText = name;
+    const summaryName =
+        document.getElementById("summaryName");
+
+    const summaryAge =
+        document.getElementById("summaryAge");
+
+    const summaryComplaint =
+        document.getElementById("summaryComplaint");
+
+    const summaryDuration =
+        document.getElementById("summaryDuration");
 
 
-    document
-        .getElementById("summaryAge")
-        .innerText = age;
+    if (summaryName) {
+        summaryName.innerText = name;
+    }
 
+    if (summaryAge) {
+        summaryAge.innerText = age;
+    }
 
-    document
-        .getElementById("summaryComplaint")
-        .innerText = complaint;
+    if (summaryComplaint) {
+        summaryComplaint.innerText = complaint;
+    }
 
-
-    document
-        .getElementById("summaryDuration")
-        .innerText = duration;
+    if (summaryDuration) {
+        summaryDuration.innerText = duration;
+    }
 
 
     if (uploadedFile) {
 
-        document
-            .getElementById("reportStatus")
-            .innerText =
-            "Document uploaded ✓";
+        const reportStatus =
+            document.getElementById("reportStatus");
+
+        if (reportStatus) {
+
+            reportStatus.innerText =
+                "Document uploaded ✓";
+
+        }
 
     }
 
@@ -466,11 +546,16 @@ function generateSummary() {
 }
 
 
-/* =========================
+/* =========================================================
    EMERGENCY DETECTION
-========================= */
+========================================================= */
 
 function checkEmergency(text) {
+
+    if (!text) {
+        return;
+    }
+
 
     const emergencyKeywords = [
 
@@ -507,66 +592,111 @@ function checkEmergency(text) {
 
     if (found) {
 
-        document
-            .getElementById("emergencyAlert")
-            .classList.remove("hidden");
+        const emergencyAlert =
+            document.getElementById(
+                "emergencyAlert"
+            );
+
+        if (emergencyAlert) {
+
+            emergencyAlert.classList.remove(
+                "hidden"
+            );
+
+        }
 
     }
 
 }
 
 
-/* =========================
+/* =========================================================
    FILE UPLOAD
-========================= */
+========================================================= */
 
-const fileInput =
-    document.getElementById("fileInput");
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-
-if (fileInput) {
-
-    fileInput.addEventListener(
-        "change",
-        function() {
-
-            if (!this.files.length) {
-
-                uploadedFile = null;
-
-                document
-                    .getElementById("fileName")
-                    .innerText =
-                    "No file selected";
-
-                return;
-            }
+        const fileInput =
+            document.getElementById(
+                "fileInput"
+            );
 
 
-            uploadedFile =
-                this.files[0];
-
-
-            document
-                .getElementById("fileName")
-                .innerText =
-                `✓ ${uploadedFile.name}`;
-
-
-            document
-                .getElementById("reportStatus")
-                .innerText =
-                "Document uploaded ✓";
-
+        if (!fileInput) {
+            return;
         }
-    );
-
-}
 
 
-/* =========================
+        fileInput.addEventListener(
+            "change",
+            function () {
+
+                if (!this.files.length) {
+
+                    uploadedFile = null;
+
+
+                    const fileName =
+                        document.getElementById(
+                            "fileName"
+                        );
+
+
+                    if (fileName) {
+
+                        fileName.innerText =
+                            "No file selected";
+
+                    }
+
+                    return;
+
+                }
+
+
+                uploadedFile =
+                    this.files[0];
+
+
+                const fileName =
+                    document.getElementById(
+                        "fileName"
+                    );
+
+
+                if (fileName) {
+
+                    fileName.innerText =
+                        `✓ ${uploadedFile.name}`;
+
+                }
+
+
+                const reportStatus =
+                    document.getElementById(
+                        "reportStatus"
+                    );
+
+
+                if (reportStatus) {
+
+                    reportStatus.innerText =
+                        "Document uploaded ✓";
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
    DOCUMENT ANALYSIS
-========================= */
+========================================================= */
 
 function analyzeDocument() {
 
@@ -577,6 +707,7 @@ function analyzeDocument() {
         );
 
         return;
+
     }
 
 
@@ -584,6 +715,11 @@ function analyzeDocument() {
         document.getElementById(
             "analysisResult"
         );
+
+
+    if (!result) {
+        return;
+    }
 
 
     result.innerText =
@@ -609,20 +745,27 @@ function analyzeDocument() {
         });
 
 
-        document
-            .getElementById("reportStatus")
-            .innerText =
-            "Analyzed ✓";
+        const reportStatus =
+            document.getElementById(
+                "reportStatus"
+            );
 
+
+        if (reportStatus) {
+
+            reportStatus.innerText =
+                "Analyzed ✓";
+
+        }
 
     }, 1800);
 
 }
 
 
-/* =========================
+/* =========================================================
    VERIFY CASE
-========================= */
+========================================================= */
 
 function verifyCase() {
 
@@ -632,16 +775,20 @@ function verifyCase() {
         );
 
 
-    status.innerText =
-        "● Verified";
+    if (status) {
+
+        status.innerText =
+            "● Verified";
 
 
-    status.style.background =
-        "#e3f6e9";
+        status.style.background =
+            "#e3f6e9";
 
 
-    status.style.color =
-        "#16834b";
+        status.style.color =
+            "#16834b";
+
+    }
 
 
     alert(
@@ -651,9 +798,9 @@ function verifyCase() {
 }
 
 
-/* =========================
+/* =========================================================
    EDIT SUMMARY
-========================= */
+========================================================= */
 
 function editSummary() {
 
@@ -661,6 +808,11 @@ function editSummary() {
         document.getElementById(
             "summaryComplaint"
         );
+
+
+    if (!complaint) {
+        return;
+    }
 
 
     const newValue =
@@ -683,9 +835,9 @@ function editSummary() {
 }
 
 
-/* =========================
+/* =========================================================
    PATIENT SEARCH
-========================= */
+========================================================= */
 
 function searchPatients() {
 
@@ -693,6 +845,11 @@ function searchPatients() {
         document.getElementById(
             "patientSearch"
         );
+
+
+    if (!searchInput) {
+        return;
+    }
 
 
     const searchValue =
@@ -726,9 +883,9 @@ function searchPatients() {
 }
 
 
-/* =========================
+/* =========================================================
    VIEW PATIENT
-========================= */
+========================================================= */
 
 function viewPatient(name) {
 
@@ -739,43 +896,77 @@ function viewPatient(name) {
     );
 
 
-    document
-        .getElementById("summary")
-        .scrollIntoView({
+    const summary =
+        document.getElementById(
+            "summary"
+        );
+
+
+    if (summary) {
+
+        summary.scrollIntoView({
             behavior: "smooth"
         });
 
+    }
+
 }
 
 
-/* =========================
-   INITIAL SETUP
-========================= */
+/* =========================================================
+   SUPABASE CONNECTION TEST
+========================================================= */
+
+async function testSupabase() {
+
+    try {
+
+        const { data, error } =
+            await db
+                .from("appointments")
+                .select("*")
+                .limit(1);
+
+
+        if (error) {
+
+            console.error(
+                "Supabase connection error:",
+                error
+            );
+
+            return;
+
+        }
+
+
+        console.log(
+            "Supabase connected successfully:",
+            data
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Supabase test failed:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RUN SUPABASE TEST
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
-    function() {
+    function () {
 
-        updateLanguageButtons();
-
-        updateQuestion();
+        testSupabase();
 
     }
 );
-/* =========================
-   SUPABASE CONNECTION TEST
-========================= */
 
-async function testSupabase() {
-    const { data, error } = await db
-        .from("appointments")
-        .select("*")
-        .limit(1);
-
-    if (error) {
-        console.error("Supabase connection error:", error);
-    } else {
-        console.log("Supabase connected successfully:", data);
-    }
-}
-testSupabase();
